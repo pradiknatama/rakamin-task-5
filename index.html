@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bootstrap demo</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+  </head>
+  <style>
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    td,
+    th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #dddddd;
+    }
+  </style>
+  <body>
+    <ul class="nav justify-content-center">
+      <li class="nav-item">
+        <button class="btn btn-outline-primary" onclick="openTab('register')">
+          Register
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="btn btn-outline-primary" onclick="openTab('list')">
+          List Member
+        </button>
+      </li>
+    </ul>
+    <hr />
+
+    <div class="contents" id="register">
+      <div class="container">
+        <div class="col-sm-12">
+          <h2 class="position-absolute start-50 translate-middle">Register</h2>
+        </div>
+        <div class="form-group pt-5">
+          <label class="control-label col-sm-2" for="nama">Nama :</label>
+          <div class="col-sm-12">
+            <input
+              type="text"
+              class="form-control"
+              id="nama-form"
+              placeholder="Masukkan Nama"
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-sm-2" for="umur">Umur:</label>
+          <div class="col-sm-12">
+            <input
+              type="number"
+              class="form-control"
+              id="umur"
+              placeholder="Masukkan Umur"
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-sm-2" for="sangu">Uang Sangu:</label>
+          <div class="col-sm-12">
+            <input
+              type="number"
+              class="form-control"
+              id="sangu"
+              placeholder="Masukkan Uang Sangu"
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10 pt-2">
+            <button class="btn btn-primary" id="btn-submit">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="contents" style="display: none" id="list">
+      <table id="data-pendaftar">
+        <tr>
+          <td>Nama</td>
+          <td>Umur</td>
+          <td>Uang Sangu</td>
+        </tr>
+      </table>
+      <hr />
+      <div class="col-sm-12">
+        <div class="row" style="text-align: center">
+          <h2>REKAP</h2>
+          <p>
+            Rata rata pendaftar memiliki uang sangu sebesar
+            <span id="rerata_sangu">0</span> dengan rata rata umur
+            <span id="rerata_umur">0</span>
+          </p>
+        </div>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      // class untuk oop pendaftaran
+      class Pendaftar {
+        // set constructor properti seperti nama, umur, dan sangu
+        constructor(nama, umur, sangu) {
+          this.nama = nama;
+          this.umur = umur;
+          this.sangu = sangu;
+        }
+      }
+      // function untuk set menampilkan isi content yg dipilih seperti register/list
+      function openTab(content) {
+        var i;
+        // variable untuk mendapatkan content berdasarkan class contents
+        var contents = document.getElementsByClassName("contents");
+        // looping karena pada class contents terdapat lebih dari 1
+        for (i = 0; i < contents.length; i++) {
+          // set display menjadi none (atau tidak ditampilkan)
+          contents[i].style.display = "none";
+        }
+        // set id berdasarkan content yg dipilih berdasarkan isian dari function openTab(content) dan melakukan penambahan style menjadi block
+        //  untk menampilkan content
+        document.getElementById(content).style.display = "block";
+      }
+
+      // get element id dari btn-submit
+      const register = document.getElementById("btn-submit");
+      // onclick action button dari id btn-submit
+      register.addEventListener("click", () => {
+        // untuk menampung data pendaftaran
+        let data_pendaftar = new Pendaftar(
+          document.getElementById("nama-form").value,
+          document.getElementById("umur").value,
+          document.getElementById("sangu").value
+        );
+        let check_umur = check_nama = check_sangu = true;
+
+        // cek data nama
+        const nama_pendaftar = new Promise((resolve, rejected) => {
+          if (data_pendaftar.nama.length >= 10) {
+            resolve((check_nama = true));
+          } else {
+            rejected((check_nama = false));
+          }
+        });
+        // error handlinng untuk nama pendaftaran
+        nama_pendaftar
+          .then((result) => {
+            console.log(result);
+          })
+          .catch((error) => {
+            alert("Nama minimal 10 karakter");
+          });
+
+        // cek data umur
+        const umur = new Promise((resolve, rejected) => {
+          if (data_pendaftar.umur >= 25) {
+            resolve((check_umur = true));
+          } else {
+            rejected((check_umur = false));
+          }
+        });
+        // error handlinng untuk umur pendaftaran
+        umur
+          .then((result) => {
+            console.log(result);
+          })
+          .catch((error) => {
+            alert("Umur minimal 25 tahun");
+          });
+
+        // cek data sangu
+        const sangu_pendaftar = new Promise((resolve, rejected) => {
+          //cek kondiis jika inputan sangu >=100.000 dan sangu<=1.000.000
+          if (
+            data_pendaftar.sangu >= 100000 &&
+            data_pendaftar.sangu <= 1000000
+          ) {
+            resolve((check_sangu = true));
+          } else {
+            rejected((check_sangu = false));
+          }
+        });
+        // error handlinng untuk sangu pendaftaran
+
+        sangu_pendaftar
+          .then((result) => {
+            console.log(result);
+          })
+          .catch((error) => {
+            alert("Uang sangu minimal 100 ribu dan maksimal 1 juta");
+          });
+        // validasi untuk nama,umur, dan sangu apakah sudah terpenuhi atau tidak
+        if (check_umur && check_nama && check_sangu == true) {
+          // jika memenuhi maka akan ditambahkan ke table
+          addToTable(
+            data_pendaftar.nama,
+            data_pendaftar.umur,
+            data_pendaftar.sangu
+          );
+          // function untuk menghitung rata2
+          getAvg();
+        }
+      });
+      // function untuk menambahkan table
+      function addToTable(nama, umur, sangu) {
+        var table = document.getElementById("data-pendaftar");
+        // create new row
+        var row = table.insertRow(1);
+        // insert to row and set cell [0][1][2]nama,umur,sangu
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        // set value cell
+        cell1.innerHTML = nama;
+        cell2.innerHTML = umur;
+        cell3.innerHTML = sangu;
+      }
+      // function to get avg
+      function getAvg() {
+        let total_umur = 0;
+        let total_sangu = 0;
+        let avg_umur = 0;
+        let avg_sangu = 0;
+        const umur_display = document.getElementById("rerata_umur");
+        const sangu_display = document.getElementById("rerata_sangu");
+        var table = document.getElementById("data-pendaftar");
+        // jumlah data -1 karena index 0 digunakan untuk header
+        let length_data = table.rows.length - 1;
+
+        // looping mulai dari 1 karena index 0 digunakan untuk header
+        for (var r = 1, n = table.rows.length; r < n; r++) {
+          // cell ke 1 umur
+          // set value to float
+          total_umur += parseFloat(table.rows[r].cells[1].innerHTML);
+          // cell ke 2 sangu
+          // set value to float
+          total_sangu += parseFloat(table.rows[r].cells[2].innerHTML);
+        }
+        // avg umur
+        avg_umur = total_umur / length_data;
+        // avg sangu
+        avg_sangu = total_sangu / length_data;
+        // set tampilan rata2
+        umur_display.innerHTML = avg_umur;
+        sangu_display.innerHTML = avg_sangu;
+      }
+      
+    </script>
+  </body>
+</html>
